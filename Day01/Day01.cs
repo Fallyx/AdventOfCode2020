@@ -22,17 +22,17 @@ namespace AdventOfCode2020.Day01
                 }
             }
 
-            for (int i = 0; i < numbers.Count - 1; i++) 
+            for (int i = 0; i < numbers.Count; i++) 
             {
-                for (int x = 1; x < numbers.Count; x++) 
+                for (int x = i + 1; x < numbers.Count; x++) 
                 {
                     if (!foundFirst && numbers[i] + numbers[x] == 2020) 
                     {
-                        Console.WriteLine($"Task1: {numbers[i] * numbers[x]}");
+                        Console.WriteLine($"Task 1: {numbers[i] * numbers[x]}");
                         foundFirst = true;
                     }
 
-                    for(int y = 2; y < numbers.Count; y++) 
+                    for(int y = x + 1; y < numbers.Count; y++) 
                     {
                         if (!foundSecond && numbers[i] + numbers[x] + numbers[y] == 2020)
                         {
@@ -40,10 +40,7 @@ namespace AdventOfCode2020.Day01
                             foundSecond = true;
                         }
 
-                        if (foundFirst && foundSecond) 
-                        {
-                            return;
-                        }
+                        if (foundFirst && foundSecond) return;
                     }
                 }
             }
