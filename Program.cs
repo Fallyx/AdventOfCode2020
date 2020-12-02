@@ -12,6 +12,7 @@ namespace AdventOfCode2020
         {
             Console.WriteLine("Run a single day [1-25] or [a]ll:");
             String input = Console.ReadLine();
+            Console.WriteLine("---------------------------------\n");
 
             if (input == "a") {
                 FullRun();
@@ -31,11 +32,18 @@ namespace AdventOfCode2020
         {
             swTot.Start();
 
-            #region day 1
+            #region day 01
             swDay.Start();
-            Day01.Day01.Task1();
+            Day01.Day01.Task1and2();
             swDay.Stop();
             Console.WriteLine($"Day 01 elapsed time: {swDay.Elapsed}\n");
+            #endregion
+
+            #region day 02
+            swDay.Restart();
+            Day02.Day02.Task1and2();
+            swDay.Stop();
+            Console.WriteLine($"Day 02 elapsed time: {swDay.Elapsed}\n");
             #endregion
 
             swTot.Stop();
@@ -49,8 +57,11 @@ namespace AdventOfCode2020
             switch (day)
             {
                 case 1:
-                    Day01.Day01.Task1();
-                    break;  
+                    Day01.Day01.Task1and2();
+                    break;
+                case 2:
+                    Day02.Day02.Task1and2();
+                    break;
                 default:
                     break;
             }
