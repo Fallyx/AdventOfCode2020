@@ -12,36 +12,36 @@ namespace AdventOfCode2020.Day03
         {
             var lines = File.ReadAllLines(inputPath);
 
-            int x = 0;
-            int[] ys = new int[5];
+            int[] xs = new int[5];
+            int y = 0;
             int[] treesEncountered = new int[5];
             int[,] slopes = new int[,]
             {
                 {1,1},
-                {1,3},
-                {1,5},
-                {1,7},
-                {2,1}
+                {3,1},
+                {5,1},
+                {7,1},
+                {1,2}
             };
 
-            while (x < lines.Length - 1)
+            while (y < lines.Length - 1)
             {
-                for (int i = 0; i < ys.Length; i++)
+                for (int i = 0; i < xs.Length; i++)
                 {
-                    if (x % slopes[i,0] != 0) continue;
-                    ys[i] += slopes[i,1];
-                    if (ys[i] >= lines[x].Length) 
+                    if (y % slopes[i,1] != 0) continue;
+                    xs[i] += slopes[i,0];
+                    if (xs[i] >= lines[y].Length) 
                     {
-                        ys[i] -= lines[x].Length;
+                        xs[i] -= lines[y].Length;
                     }
                 }
                 
-                x++;
+                y++;
 
-                for (int i = 0; i < ys.Length; i++) 
+                for (int i = 0; i < xs.Length; i++) 
                 {
-                    if (x % slopes[i,0] != 0) continue;
-                    if (lines[x][ys[i]] == '#') 
+                    if (y % slopes[i,1] != 0) continue;
+                    if (lines[y][xs[i]] == '#') 
                     {
                         treesEncountered[i]++;
                     }
