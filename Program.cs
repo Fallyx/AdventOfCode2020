@@ -48,6 +48,7 @@ namespace AdventOfCode2020
 
             #region day 03
             swDay.Restart();
+            Day03.Day03.Task1and2();
             swDay.Stop();
             Console.WriteLine($"Day 03 elapsed time: {swDay.Elapsed}\n");
             #endregion
@@ -69,6 +70,7 @@ namespace AdventOfCode2020
                     Day02.Day02.Task1and2();
                     break;
                 case 3:
+                    Day03.Day03.Task1and2();
                     break;
                 default:
                     break;
