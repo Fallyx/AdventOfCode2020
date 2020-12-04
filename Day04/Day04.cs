@@ -9,8 +9,10 @@ namespace AdventOfCode2020.Day04
     {
         const string inputPath = @"Day04/Input.txt";
         const string clrPattern = "^#[0-9a-f]{6}$";
+        const string eyePattern = "(amb|blu|brn|gry|grn|hzl|oth)";
         const string pidPattern = "^\\d{9}$";
         static Regex clrRgx = new Regex(clrPattern);
+        static Regex eyeRgx = new Regex(eyePattern);
         static Regex pidRgx = new Regex(pidPattern);
 
 
@@ -97,7 +99,7 @@ namespace AdventOfCode2020.Day04
 
                 if (!clrRgx.Match(Hcl).Success) return false;
 
-                if (Ecl != "amb" && Ecl != "blu" && Ecl != "brn" && Ecl != "gry" && Ecl != "grn" && Ecl != "hzl" && Ecl != "oth") return false;
+                if (!eyeRgx.Match(Ecl).Success) return false;
 
                 if (!pidRgx.Match(Pid).Success) return false;
 
@@ -135,7 +137,6 @@ namespace AdventOfCode2020.Day04
                         Cid = keyVal[1];
                         break;
                     default:
-                        Console.WriteLine(value);
                         break;
                 }
             }
