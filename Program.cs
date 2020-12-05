@@ -10,9 +10,18 @@ namespace AdventOfCode2020
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Run a single day [1-25] or [a]ll:");
-            String input = Console.ReadLine();
-            Console.WriteLine("---------------------------------\n");
+            string input;
+            if (args.Length != 0)
+            {
+                input = args[0];
+            }
+            else
+            {
+                Console.WriteLine("Run a single day [1-25] or [a]ll:");
+                input = Console.ReadLine();
+                Console.WriteLine("---------------------------------\n");
+            }
+            
 
             if (input == "a") {
                 FullRun();
@@ -60,6 +69,13 @@ namespace AdventOfCode2020
             Console.WriteLine($"Day 04 elapsed time: {swDay.Elapsed}\n");
             #endregion
 
+            #region day 05
+            swDay.Restart();
+            Day05.Day05.Task1and2();
+            swDay.Stop();
+            Console.WriteLine($"Day 05 elapsed time: {swDay.Elapsed}\n");
+            #endregion
+
             swTot.Stop();
             Console.WriteLine($"\nTotal elapsed time: {swTot.Elapsed}");
         }
@@ -81,6 +97,9 @@ namespace AdventOfCode2020
                     break;
                 case 4:
                     Day04.Day04.Task1and2();
+                    break;
+                case 5:
+                    Day05.Day05.Task1and2();
                     break;
                 default:
                     break;
