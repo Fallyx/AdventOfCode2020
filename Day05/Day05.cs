@@ -18,6 +18,12 @@ namespace AdventOfCode2020.Day05
                 string seat;
                 while ((seat = reader.ReadLine()) != null)
                 {
+                    /*  This approach takes longer than my CalculateRowCol method
+                        string seatIdstr = Regex.Replace(seat, "(F|L)", "0");
+                        seatIdstr = Regex.Replace(seatIdstr, "(B|R)", "1");
+                        int seatId = Convert.ToInt32(seatIdstr, 2);
+                    */
+
                     int row = CalulateRowCol(seat, 0, 7, 0, 127);
                     int col = CalulateRowCol(seat, 7, 10, 0, 7);
 
