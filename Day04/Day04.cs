@@ -15,7 +15,6 @@ namespace AdventOfCode2020.Day04
         static Regex eyeRgx = new Regex(eyePattern);
         static Regex pidRgx = new Regex(pidPattern);
 
-
         public static void Task1and2()
         {
             List<Passport> passports = new List<Passport>();
