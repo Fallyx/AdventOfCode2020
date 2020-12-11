@@ -110,6 +110,13 @@ namespace AdventOfCode2020
             Console.WriteLine($"Day 10 elapsed time: {swDay.Elapsed}\n");
             #endregion
 
+            #region day 11
+            swDay.Restart();
+            Day11.Day11.Task1and2();
+            swDay.Stop();
+            Console.WriteLine($"Day 11 elapsed time: {swDay.Elapsed}\n");
+            #endregion
+
             swTot.Stop();
             Console.WriteLine($"\nTotal elapsed time: {swTot.Elapsed}");
         }

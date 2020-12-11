@@ -13,183 +13,165 @@ namespace AdventOfCode2020.Day11
             string[] lines = File.ReadAllLines(inputPath);
             int width = lines[0].Length;
 
-            char[] prev = new char[lines.Length * width];
+            char[,] prev = new char[lines.Length, width];
 
             for(int i = 0; i < lines.Length; i++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    prev[i * width + x] = lines[i][x];
+                    prev[i, x] = lines[i][x];
                 }
             }
 
-            Task1(prev, width);
-        //    Task2(prev, width);
+            char[,] prevTask2 = prev.Clone() as char[,];
+
+            Task1(prev);
+            Task2(prevTask2);
         }
 
-        private static void Task1(char[] prev, int width)
+        private static void Task1(char[,] prev)
         {
-            char[] next = new char[prev.Length];
-            Array.Copy(prev, next, prev.Length);
-
+            char[,] next = prev.Clone() as char[,];
             bool changed;
 
-            int idx;
-
-            do 
+            do
             {
                 changed = false;
 
-                for(int y = 0; y < prev.Length; y += width)
+                for (int y = 0; y < prev.GetLength(0); y++)
                 {
-                    for(int x = 0; x < width; x++)
+                    for (int x = 0; x < prev.GetLength(1); x++)
                     {
-                        if (y == 80 && x == 9)
-                        {
-                            Console.Write("");
-                        }
-
                         int adjacentOccupied = 0;
 
-                        if (y - width + x - 1 >= 0 && y - width + x - 1 >= y - width && prev[(y-width) + (x-1)] == '#') adjacentOccupied++;
-                        if (y - width >= 0 && prev[(y-width) + x] == '#') adjacentOccupied++;
-                        if (y - width + x + 1 >= 0 && y - width + x + 1 < y && prev[(y-width) + (x+1)] == '#') adjacentOccupied++;
+                        if (y - 1 >= 0 && x - 1 >= 0 && prev[y-1, x-1] == '#') adjacentOccupied++;
+                        if (y - 1 >= 0 && prev[y-1, x] == '#') adjacentOccupied++;
+                        if (y - 1 >= 0 && x + 1 < prev.GetLength(1) && prev[y-1, x+1] == '#') adjacentOccupied++;
 
-                        if (y + x - 1 >= y && prev[y + (x-1)] == '#') adjacentOccupied++;
-                        if (y + x + 1 < y + width && prev[y + (x+1)] == '#') adjacentOccupied++;
+                        if (x - 1 >= 0 && prev[y, x-1] == '#') adjacentOccupied++;
+                        if (x + 1 < prev.GetLength(1) && prev[y, x+1] == '#') adjacentOccupied++;
 
-                        if (y + width + x - 1 < prev.Length && y + width + x - 1 >= y + width && prev[(y+width) + (x-1)] == '#') adjacentOccupied++;
-                        if (y + width < prev.Length && prev[(y+width) + x] == '#') adjacentOccupied++;
-                        if (y + width + x + 1 < prev.Length && y + width + x + 1 < y + 2 * width && prev[(y+width) + (x+1)] == '#') adjacentOccupied++;
+                        if (y + 1 < prev.GetLength(0) && x - 1 >= 0 && prev[y+1, x-1] == '#') adjacentOccupied++;
+                        if (y + 1 < prev.GetLength(0) && prev[y+1,x] == '#') adjacentOccupied++;
+                        if (y + 1 < prev.GetLength(0) && x + 1 < prev.GetLength(1) && prev[y+1,x+1] == '#') adjacentOccupied++;
 
-                        if (prev[y + x] == 'L' && adjacentOccupied == 0) 
+                        if (prev[y, x] == 'L' && adjacentOccupied == 0) 
                         {
-                            next[y + x] = '#';
+                            next[y, x] = '#';
                             changed = true;
                         }
-                        else if (prev[y + x] == '#' && adjacentOccupied >= 4)
+                        else if (prev[y, x] == '#' && adjacentOccupied >= 4)
                         {
-                            next[y + x] = 'L';
+                            next[y, x] = 'L';
                             changed = true;
                         }
                     }
                 }
 
-                Array.Copy(next, prev, prev.Length);
-
+                prev = next.Clone() as char[,];
             } while(changed);
-            
-            Console.WriteLine($"Task 1: {prev.Count(c => c == '#')}");
+
+            Console.WriteLine($"Task 1: {prev.Cast<char>().ToArray().Count(c => c == '#')}");
         }
 
-
-        private static void Task2(char[] prev, int width)
+        private static void Task2(char[,] prev)
         {
-            char[] next = new char[prev.Length];
-            Array.Copy(prev, next, prev.Length);
-
+            char[,] next = prev.Clone() as char[,];
             bool changed;
-            int idx;
 
-            do 
+            do
             {
                 changed = false;
 
-                for(int y = 0; y < prev.Length; y += width)
+                for (int y = 0; y < prev.GetLength(0); y++)
                 {
-                    for(int x = 0; x < width; x++)
+                    for (int x = 0; x < prev.GetLength(1); x++)
                     {
-                        if (y == 80 && x == 9)
-                        {
-                            Console.Write("");
-                        }
-
                         int adjacentOccupied = 0;
                         bool[] found = new bool[] { false, false, false, false, false, false, false, false };
-
-                        int searchRadius = 0;
+                        int searchRadius = 1;
 
                         while(found.Any(f => f == false))
                         {
-                            ++searchRadius;
-                            idx =  y - (searchRadius * width) + x - searchRadius;
-
-                            if (!found[0] && idx >= 0 
-                                          && idx >= y - width 
-                                          && prev[idx] == '#' || prev[idx] == 'L')
+                            if (!found[0] && (y - searchRadius < 0 || x - searchRadius < 0)) found[0] = true;
+                            if (!found[0] && (prev[y-searchRadius, x-searchRadius] == '#' || prev[y-searchRadius, x-searchRadius] == 'L')) 
                             {
-                                if (prev[idx] == '#') adjacentOccupied++;
+                                if (prev[y-searchRadius, x-searchRadius] == '#') adjacentOccupied++;
                                 found[0] = true;
-                            }
-                            if (!found[1] && y - (searchRadius * width) >= 0 
-                                          && prev[(y-searchRadius*width) + x] == '#')
+                            } 
+
+                            if (!found[1] && y - searchRadius < 0) found[1] = true;
+                            if (!found[1] && (prev[y-searchRadius, x] == '#' || prev[y-searchRadius, x] == 'L')) 
                             {
-                                adjacentOccupied++;
+                                if (prev[y-searchRadius, x] == '#') adjacentOccupied++;
                                 found[1] = true;
                             }
 
-                            if (!found[2] && y - (searchRadius * width) + x + searchRadius >= 0 
-                                          && y - (searchRadius * width) + x + searchRadius < y 
-                                          && prev[(y-searchRadius*width) + (x+searchRadius)] == '#')
+                            if (!found[2] && (y - searchRadius < 0 || x + searchRadius >= prev.GetLength(1))) found[2] = true;
+                            if (!found[2] && (prev[y-searchRadius, x+searchRadius] == '#' || prev[y-searchRadius, x+searchRadius] == 'L')) 
                             {
-                                adjacentOccupied++;
+                                if (prev[y-searchRadius, x+searchRadius] == '#') adjacentOccupied++;
                                 found[2] = true;
                             }
 
-                            if (!found[3] && y + x - searchRadius >= y 
-                                          && prev[y + (x-searchRadius)] == '#') 
+
+                            if (!found[3] && x - searchRadius < 0) found[3] = true;
+                            if (!found[3] && (prev[y, x-searchRadius] == '#' || prev[y, x-searchRadius] == 'L')) 
                             {
-                                adjacentOccupied++;
+                                if (prev[y, x-searchRadius] == '#') adjacentOccupied++;
                                 found[3] = true;
                             }
-                            if (!found[4] && y + x + searchRadius < y + width 
-                                          && prev[y + (x+searchRadius)] == '#') {
-                                adjacentOccupied++;
+
+                            if (!found[4] && x + searchRadius >= prev.GetLength(1)) found[4] = true;
+                            if (!found[4] && (prev[y, x+searchRadius] == '#' || prev[y, x+searchRadius] == 'L')) 
+                            {
+                                if (prev[y, x+searchRadius] == '#') adjacentOccupied++;
                                 found[4] = true;
                             }
 
-                            if (!found[5] && y + (searchRadius * width) + x - 1 < prev.Length 
-                                          && y + (searchRadius * width) + x - 1 >= y + width 
-                                          && prev[(y+searchRadius*width) + (x-1)] == '#')
-                            { 
-                                adjacentOccupied++;
+
+                            if (!found[5] && (y + searchRadius >= prev.GetLength(0) || x - searchRadius < 0)) found[5] = true;
+                            if (!found[5] && (prev[y+searchRadius, x-searchRadius] == '#' || prev[y+searchRadius, x-searchRadius] == 'L')) 
+                            {
+                                if (prev[y+searchRadius, x-searchRadius] == '#') adjacentOccupied++;
                                 found[5] = true;
                             }
-                            if (!found[6] && y + (searchRadius * width) < prev.Length 
-                                          && prev[(y+searchRadius*width) + x] == '#')
-                            { 
-                                adjacentOccupied++;
+
+                            if (!found[6] && y + searchRadius >= prev.GetLength(0)) found[6] = true;
+                            if (!found[6] && (prev[y+searchRadius,x] == '#' || prev[y+searchRadius,x] == 'L')) 
+                            {
+                                if (prev[y+searchRadius,x] == '#') adjacentOccupied++;
                                 found[6] = true;
                             }
-                            if (!found[7] && y + (searchRadius * width) + x + searchRadius < prev.Length 
-                                          && y + (searchRadius * width) + x + searchRadius < y + 2 * width 
-                                          && prev[(y+searchRadius*width) + (x+searchRadius)] == '#')
+
+                            if (!found[7] && (y + searchRadius >= prev.GetLength(0) || x + searchRadius >= prev.GetLength(1))) found[7] = true;
+                            if (!found[7] && (prev[y+searchRadius,x+searchRadius] == '#' || prev[y+searchRadius,x+searchRadius] == 'L')) 
                             {
-                                adjacentOccupied++;
+                                if (prev[y+searchRadius,x+searchRadius] == '#') adjacentOccupied++;
                                 found[7] = true;
                             }
-                        }
-                        
 
-                        if (prev[y + x] == 'L' && adjacentOccupied == 0) 
+                            searchRadius++;
+                        }
+
+                        if (prev[y, x] == 'L' && adjacentOccupied == 0) 
                         {
-                            next[y + x] = '#';
+                            next[y, x] = '#';
                             changed = true;
                         }
-                        else if (prev[y + x] == '#' && adjacentOccupied >= 5)
+                        else if (prev[y, x] == '#' && adjacentOccupied >= 5)
                         {
-                            next[y + x] = 'L';
+                            next[y, x] = 'L';
                             changed = true;
                         }
                     }
                 }
 
-                Array.Copy(next, prev, prev.Length);
+                prev = next.Clone() as char[,];
 
             } while(changed);
 
-
-            Console.WriteLine($"Task 2: {prev.Count(c => c == '#')}");
+            Console.WriteLine($"Task 2: {prev.Cast<char>().ToArray().Count(c => c == '#')}");
         }
     }
 }
