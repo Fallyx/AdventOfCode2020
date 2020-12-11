@@ -33,6 +33,7 @@ namespace AdventOfCode2020.Day11
         {
             char[,] next = prev.Clone() as char[,];
             bool changed;
+            (bool found, int occupied) result;
 
             do
             {
@@ -48,102 +49,56 @@ namespace AdventOfCode2020.Day11
 
                         while(found.Any(f => f == false))
                         {
-                            if (!found[0] && (y - searchRadius < 0 || x - searchRadius < 0)) found[0] = true;
-                            if (!found[0]) 
+                            
+                            if (!found[0])
                             {
-                                if (prev[y-searchRadius, x-searchRadius] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[0] = true;
-                                }
-                                else if (prev[y-searchRadius, x-searchRadius] == 'L' || onlyAdj) 
-                                    found[0] = true;
-                            } 
-
-                            if (!found[1] && y - searchRadius < 0) found[1] = true;
-                            if (!found[1]) 
+                                result = IsOccupied(prev, y - searchRadius, x - searchRadius, onlyAdj);
+                                found[0] = result.found;
+                                adjacentOccupied += result.occupied;
+                            }
+                            if (!found[1])
                             {
-                                if (prev[y-searchRadius, x] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[1] = true;
-                                }
-                                else if (prev[y-searchRadius, x] == 'L' || onlyAdj)
-                                    found[1] = true;
+                                result = IsOccupied(prev, y - searchRadius, x, onlyAdj);
+                                found[1] = result.found;
+                                adjacentOccupied += result.occupied;
+                            }
+                            if (!found[2])
+                            {
+                                result = IsOccupied(prev, y - searchRadius, x + searchRadius, onlyAdj);
+                                found[2] = result.found;
+                                adjacentOccupied += result.occupied;
                             }
 
-                            if (!found[2] && (y - searchRadius < 0 || x + searchRadius >= prev.GetLength(1))) found[2] = true;
-                            if (!found[2]) 
+                            if (!found[3])
                             {
-                                if (prev[y-searchRadius, x+searchRadius] == '#')
-                                {
-                                    adjacentOccupied++;
-                                    found[2] = true;
-                                }
-                                else if (prev[y-searchRadius, x+searchRadius] == 'L' || onlyAdj)
-                                    found[2] = true;
+                                result = IsOccupied(prev, y, x - searchRadius, onlyAdj);
+                                found[3] = result.found;
+                                adjacentOccupied += result.occupied;
+                            }
+                            if (!found[4])
+                            {
+                                result = IsOccupied(prev, y, x + searchRadius, onlyAdj);
+                                found[4] = result.found;
+                                adjacentOccupied += result.occupied;
                             }
 
-
-                            if (!found[3] && x - searchRadius < 0) found[3] = true;
-                            if (!found[3]) 
+                            if (!found[5])
                             {
-                                if (prev[y, x-searchRadius] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[3] = true;
-                                }
-                                else if (prev[y, x-searchRadius] == 'L' || onlyAdj)
-                                    found[3] = true;
+                                result = IsOccupied(prev, y + searchRadius, x - searchRadius, onlyAdj);
+                                found[5] = result.found;
+                                adjacentOccupied += result.occupied;
                             }
-
-                            if (!found[4] && x + searchRadius >= prev.GetLength(1)) found[4] = true;
-                            if (!found[4]) 
+                            if (!found[6])
                             {
-                                if (prev[y, x+searchRadius] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[4] = true;
-                                }
-                                else if (prev[y, x+searchRadius] == 'L' || onlyAdj)
-                                    found[4] = true;
+                                result = IsOccupied(prev, y + searchRadius, x, onlyAdj);
+                                found[6] = result.found;
+                                adjacentOccupied += result.occupied;
                             }
-
-
-                            if (!found[5] && (y + searchRadius >= prev.GetLength(0) || x - searchRadius < 0)) found[5] = true;
-                            if (!found[5]) 
+                            if (!found[7])
                             {
-                                if (prev[y+searchRadius, x-searchRadius] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[5] = true;
-                                }
-                                else if (prev[y+searchRadius, x-searchRadius] == 'L' || onlyAdj)
-                                    found[5] = true;
-                            }
-
-                            if (!found[6] && y + searchRadius >= prev.GetLength(0)) found[6] = true;
-                            if (!found[6]) 
-                            {
-                                if (prev[y+searchRadius,x] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[6] = true;
-                                }
-                                else if (prev[y+searchRadius,x] == 'L' || onlyAdj)
-                                    found[6] = true;
-                            }
-
-                            if (!found[7] && (y + searchRadius >= prev.GetLength(0) || x + searchRadius >= prev.GetLength(1))) found[7] = true;
-                            if (!found[7]) 
-                            {
-                                if (prev[y+searchRadius,x+searchRadius] == '#') 
-                                {
-                                    adjacentOccupied++;
-                                    found[7] = true;
-                                }
-                                else if (prev[y+searchRadius,x+searchRadius] == 'L' || onlyAdj)
-                                    found[7] = true;
+                                result = IsOccupied(prev, y + searchRadius, x + searchRadius, onlyAdj);
+                                found[7] = result.found;
+                                adjacentOccupied += result.occupied;
                             }
 
                             searchRadius++;
@@ -166,6 +121,18 @@ namespace AdventOfCode2020.Day11
             } while(changed);
 
             Console.WriteLine($"Task {(onlyAdj ? 1 : 2)}: {prev.Cast<char>().ToArray().Count(c => c == '#')}");
+        }
+
+        private static (bool found, int occupied) IsOccupied(char[,] seats, int y, int x, bool onlyAdj)
+        {
+            if (y < 0 || x < 0 || y >= seats.GetLength(0) || x >= seats.GetLength(1))
+                return (true, 0);
+            else if (seats[y, x] == '#') 
+                return (true, 1);
+            else if (seats[y, x] == 'L' || onlyAdj) 
+                return (true, 0);
+            else 
+                return (false, 0);
         }
     }
 }
