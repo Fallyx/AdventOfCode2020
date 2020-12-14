@@ -131,6 +131,13 @@ namespace AdventOfCode2020
             Console.WriteLine($"Day 13 elapsed time: {swDay.Elapsed}\n");
             #endregion
 
+            #region day 14
+            swDay.Restart();
+            Day14.Day14.Task1and2();
+            swDay.Stop();
+            Console.WriteLine($"Day 14 elapsed time: {swDay.Elapsed}\n");
+            #endregion
+
             swTot.Stop();
             Console.WriteLine($"\nTotal elapsed time: {swTot.Elapsed}");
         }
@@ -179,6 +186,9 @@ namespace AdventOfCode2020
                     break;
                 case 13:
                     Day13.Day13.Task1and2();
+                    break;
+                case 14:
+                    Day14.Day14.Task1and2();
                     break;
                 default:
                     break;
