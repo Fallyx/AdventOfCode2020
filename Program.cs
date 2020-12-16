@@ -200,6 +200,9 @@ namespace AdventOfCode2020
                 case 15:
                     Day15.Day15.Task1and2();
                     break;
+                case 16:
+                    Day16.Day16.Task1();
+                    break;
                 default:
                     break;
             }
